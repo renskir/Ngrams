@@ -4,7 +4,6 @@ from model import BigramModel
 
 def generate(model, n):
     """
-
     :param model: Bigram model object
     :param n: any number
     :return: a paragraph of n random sentences as a single (formatted) string.
