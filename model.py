@@ -1,6 +1,7 @@
 import re
 import nltk
 import itertools
+from collections import Counter
 """
 Defines the class BigramModel
 """
@@ -24,8 +25,19 @@ class BigramModel:
         self.vocabulary = list(set(itertools.chain(*self.sentences)))
 
         # construct bigrams
-        bigrams = list(itertools.chain(*[nltk.bigrams(sentence) for sentence in self.sentences]))
-        self.frequency_table = nltk.FreqDist(bigrams)
+        bi_grams = list(itertools.chain(*[self._bi_grams(sentence) for sentence in self.sentences]))
+
+        # constructs a frequency distribution
+        self.frequency_table = dict(Counter(bi_grams))
+
+
+    @staticmethod
+    def _bi_grams(sentence):
+        """
+        :param sentence: any processed sentence
+        :return: all bigrams in the sentence
+        """
+        return [(token1, token2) for token1, token2 in zip(sentence[:-1], sentence[1:])]
 
     @staticmethod
     def _process(sentence):
@@ -51,7 +63,8 @@ class BigramModel:
         :return: P_r(w_n | w) , the raw (unsmoothed) probability of
         seeing token w_n if we have just seen token w.
         """
-        return self.frequency_table[(w, w_n)] / sum(self.frequency_table.values())
+        return self.frequency_table[(w, w_n)] / sum(self.frequency_table.values()) \
+            if (w, w_n) in self.frequency_table.keys() else 0
 
     def p_smooth(self, w, w_n):
         """
@@ -60,7 +73,8 @@ class BigramModel:
         :return: P(w_n | w) , the Laplace-smoothed probability of
         seeing token w_n if we have just seen token w.
         """
-        return (self.frequency_table[(w, w_n)] + 1) / (sum(self.frequency_table.values()) + len(self.vocabulary))
+        count = self.frequency_table[(w, w_n)] if (w, w_n) in self.frequency_table.keys() else 0
+        return (count + 1) / (sum(self.frequency_table.values()) + len(self.vocabulary))
 
     def successors(self, w):
         """
@@ -70,9 +84,9 @@ class BigramModel:
         probability, P_r(w_i | w). Tokens with zero probability are
         not be included in the result.
         """
-        successors = [(w_i, self.frequency_table[(w, w_i)] / sum(self.frequency_table.values()))
+        successors = [(w_i, self.p_raw(w, w_i))
                       for w_i in self.vocabulary
-                      if self.frequency_table[(w, w_i)] != 0]
+                      if (w, w_i) in self.frequency_table.keys()]
         return successors
 
     def perplexity(self, sent):
@@ -84,15 +98,11 @@ class BigramModel:
         """
         # processing the sentences
         sent = self._process(sent)
-        print(sent)
 
-        # construct onegrams in order to calculate p(w1)
-        onegrams = nltk.ngrams(list(itertools.chain(*self.sentences)), 1)
-        token_frequencies = nltk.FreqDist(onegrams)
-
+        # construct onegrams in order to calculate p(<s>)
+        onegrams = [token for sentence in self.sentences for token in sentence]
         # calculating p(sent)
-        p = token_frequencies[(sent[0], )] / sum(token_frequencies.values())
-        print(p)
+        p = onegrams.count('<s>') / len(onegrams)
         for token1, token2 in zip(sent[:-1], sent[1:]):
             p *= self.p_smooth(token1, token2)
 
