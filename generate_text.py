@@ -7,7 +7,7 @@ import random
 import argparse
 """
 Constructs a bigram model.
-Generates five random sentences.
+Generates two paragraphs of five random sentences.
 Calculates the perplexity of a few test sentences.
 """
 
@@ -59,7 +59,7 @@ def generate(model, n):
 def main():
     """
     Constructs a bigram model.
-    Generates five random sentences.
+    Generates two paragraphs of five random sentences.
     Calculates the perplexity of a few test sentences.
     """
     parser = argparse.ArgumentParser()
