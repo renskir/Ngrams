@@ -1,35 +1,35 @@
 import os.path
 import nltk
+import itertools
+"""
+CorpusReader opens a .txt file and tokenizes the words in it. Returns a list of words
+"""
 
 class CorpusReader:
-    """Read the contents of a directory of files, and return the results as
-    either a list of lines or a list of words.
-
-    The pathname of the directory to read should be passed when
-    creating the class:
-
-    >>> reader = CorpusReader(r"path/to/dir")
+    """
+    Reads the contents of directory files
     """
 
     def __init__(self, path):
         """
-        Initialize a CorpusReader object. This function stores the path to
-        the corpus directory.
+        initialize a CorpusReader object, stores the path to the corpus directory
         """
+
         self.path = path
-        if os.path.isdir(self.path) != True:
-            raise ValueError(path + "doe snot exist or is not a directory")
+        if not os.path.isdir(self.path):                                    #Gives an Error if the path isn't correct
+            raise ValueError(path + " isn't a directory, or doesn't exist at all")
 
     def sents(self):
-        """"
-        return the text of the corpus as a list of tokenized sentences
-        --> Corpus becomes a list of tokens
         """
-        for
-    def lines(self):
-        """Read all text in the corpus and return it as a list of lines"""
-        # Your code here
+        Reads the text of the corpus and return it as a list of tokenized words.
+        """
 
-corpus = CorpusReader("path/to/corpus/directory")
-sentences = corpus.sents()  # a list of lists of tokens
-#dit is een comment
+        text = str()
+        for file in os.listdir(self.path):
+            if file.endswith(".txt"):                                       #checks if the given path contains a text file and opens it
+                with open(self.path + "/" + file) as connection:
+                    text += connection.read()
+
+        sentences_list = nltk.sent_tokenize(text)                           #tokenizes the text to sentences
+        word_list = [nltk.word_tokenize(sent) for sent in sentences_list]   #tokenizes the tokenized sentences to words
+        return word_list
