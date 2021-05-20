@@ -1,15 +1,14 @@
 import os.path
 import nltk
-import itertools
 """
 CorpusReader opens a .txt file and tokenizes the words in it. Returns a list of words
 """
+
 
 class CorpusReader:
     """
     Reads the contents of directory files
     """
-
     def __init__(self, path):
         """
         initialize a CorpusReader object, stores the path to the corpus directory
