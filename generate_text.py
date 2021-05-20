@@ -5,6 +5,11 @@ import nltk
 import os.path
 import random
 import argparse
+"""
+Constructs a bigram model.
+Generates five random sentences.
+Calculates the perplexity of a few test sentences.
+"""
 
 
 def generate_sentence(model):

@@ -1,9 +1,18 @@
 import re
 import nltk
 import itertools
+"""
+Defines the class BigramModel
+"""
 
 
 class BigramModel:
+    """
+    constructs bigrams from a given corpus,
+    computes P_r(w_n | w) and smoothed P_r(w_n | w),
+    returns possible next tokens, given a particular token
+    and calculates perplexity of a given sentence
+    """
     def __init__(self, sents):
         """
         :param sents: a list of a lists of tokens
