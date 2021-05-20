@@ -12,7 +12,7 @@ class BigramModel:
         self.sentences = [self._process(sentence) for sentence in sents]
 
         # construct vocabulary
-        self.vocabulary = list(set(itertools.chain(*sents)))
+        self.vocabulary = list(set(itertools.chain(*self.sentences)))
 
         # construct bigrams
         bigrams = list(itertools.chain(*[nltk.bigrams(sentence) for sentence in self.sentences]))
@@ -75,13 +75,15 @@ class BigramModel:
         """
         # processing the sentences
         sent = self._process(sent)
+        print(sent)
 
         # construct onegrams in order to calculate p(w1)
         onegrams = nltk.ngrams(list(itertools.chain(*self.sentences)), 1)
         token_frequencies = nltk.FreqDist(onegrams)
 
         # calculating p(sent)
-        p = token_frequencies[sent[0]] / sum(token_frequencies.values())
+        p = token_frequencies[(sent[0], )] / sum(token_frequencies.values())
+        print(p)
         for token1, token2 in zip(sent[:-1], sent[1:]):
             p *= self.p_smooth(token1, token2)
 

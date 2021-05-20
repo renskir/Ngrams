@@ -9,13 +9,15 @@ class CorpusReader:
     """
     Reads the contents of directory files
     """
+
     def __init__(self, path):
         """
         initialize a CorpusReader object, stores the path to the corpus directory
         """
 
         self.path = path
-        if not os.path.isdir(self.path):                                    #Gives an Error if the path isn't correct
+        # Raises an Error if the path doesn't exist
+        if not os.path.isdir(self.path):
             raise ValueError(path + " isn't a directory, or doesn't exist at all")
 
     def sents(self):
@@ -25,10 +27,13 @@ class CorpusReader:
 
         text = str()
         for file in os.listdir(self.path):
-            if file.endswith(".txt"):                                       #checks if the given path contains a text file and opens it
+            # checks if the given path contains a text file and opens it
+            if file.endswith(".txt"):
                 with open(self.path + "/" + file) as connection:
                     text += connection.read()
 
-        sentences_list = nltk.sent_tokenize(text)                           #tokenizes the text to sentences
-        word_list = [nltk.word_tokenize(sent) for sent in sentences_list]   #tokenizes the tokenized sentences to words
+        # tokenizes the text to sentences and tokenizes the tokenized sentences to words
+        sentences_list = nltk.sent_tokenize(text)
+        word_list = [nltk.word_tokenize(sent) for sent in sentences_list]
+
         return word_list
