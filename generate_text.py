@@ -35,6 +35,11 @@ def generate(model, n):
 
 
 def main():
+    """
+    Constructs a bigram model.
+    Generates five random sentences.
+    Calculates the perplexity of a few test sentences.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', '-f', type=str, help='path to corpus file', default='.')
     args = parser.parse_args()
@@ -50,7 +55,7 @@ def main():
 
     # maakt 2 keer een paragraaf met 5 zinnen
     for _ in range(2):
-        print(generate(model, 5))
+        print(generate(model, 5) + '\n')
 
     # for each sentence in the testsentences print the perplexity
     for sentence in test_sentences:
