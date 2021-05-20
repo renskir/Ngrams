@@ -30,7 +30,6 @@ class BigramModel:
         # constructs a frequency distribution
         self.frequency_table = dict(Counter(bi_grams))
 
-
     @staticmethod
     def _bi_grams(sentence):
         """
@@ -101,6 +100,7 @@ class BigramModel:
 
         # construct onegrams in order to calculate p(<s>)
         onegrams = [token for sentence in self.sentences for token in sentence]
+
         # calculating p(sent)
         p = onegrams.count('<s>') / len(onegrams)
         for token1, token2 in zip(sent[:-1], sent[1:]):
