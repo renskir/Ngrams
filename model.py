@@ -18,11 +18,15 @@ class BigramModel:
             sents[i] = sentence
 
         self.sentences = sents
-        # bigrams = [bigram for sentence in self.sentences for bigram in nltk.bigrams(sentence)]
-        bigrams = list(itertools.chain(*[nltk.bigrams(sentence) for sentence in self.sentences]))
+        self.vocabulary = list(set(itertools.chain(*sents)))
 
-        self.frequency_table= nltk.FreqDist(bigrams)
-        self.n_bigrams = sum(self.frequency_table.values())
+        # construct bigrams
+        bigrams = list(itertools.chain(*[nltk.bigrams(sentence) for sentence in self.sentences]))
+        self.frequency_table = nltk.FreqDist(bigrams)
+
+        # construct laplace smoothed frequency table
+        bigrams.extend(nltk.bigrams(self.vocabulary))
+        self.laplace_smoothed_frequency_table = nltk.FreqDist(bigrams)
 
     def p_raw(self, w, w_n):
         """
@@ -31,15 +35,16 @@ class BigramModel:
         :return: P_r(w_n | w) , the raw (unsmoothed) probability of
         seeing token w_n if we have just seen token w.
         """
-        return self.frequency_table[(w, w_n)] / self.n_bigrams
+        return self.frequency_table[(w, w_n)] / sum(self.frequency_table.values())
 
     def p_smooth(self, w, w_n):
         """
-        :param w:
-        :param w_n:
+        :param w: any token in the vocabulary
+        :param w_n: any token in the vocabulary
         :return: P(w_n | w) , the Laplace-smoothed probability of
         seeing token w_n if we have just seen token w.
         """
+        return self.laplace_smoothed_frequency_table[(w, w_n)] / sum(self.laplace_smoothed_frequency_table.values())
 
     def successors(self, w):
         """
